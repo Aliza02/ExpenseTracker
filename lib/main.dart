@@ -1,4 +1,8 @@
+import 'package:expensetracker/bloc/CounterBloc/counter_bloc.dart';
+import 'package:expensetracker/bloc/CounterEvents/counter_events.dart';
+import 'package:expensetracker/bloc/CounterStates/counter_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +35,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (context) => CounterBloc(),
+        child: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }
@@ -108,15 +115,31 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            BlocBuilder<CounterBloc, CounterStates>(
+              builder: (context, state) {
+                if (state is IncrementState) {
+                  print(state.counter);
+                  _counter = state.counter;
+                  return Text(
+                    state.counter.toString(),
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  );
+                } else {
+                  return Text(
+                    'null',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  );
+                }
+              },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          print(_counter);
+          BlocProvider.of<CounterBloc>(context).add(IncrementEvent(_counter));
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
