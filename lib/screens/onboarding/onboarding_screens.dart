@@ -1,11 +1,12 @@
 import 'dart:ui';
-
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_events.dart';
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_states.dart';
 import 'package:expensetracker/model/onboarding_model.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/res/images.dart';
+import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
+import 'package:expensetracker/screens/SignIn_SignUp/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -141,7 +142,9 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                               // backgroundColor: Gradient.linear(from, to, colors)
                               backgroundColor: AppColors.onboardingButtonColor,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.to(() => Signup());
+                            },
                             child: Text(
                               'Start Managing your Expenses',
                               style: TextStyle(
