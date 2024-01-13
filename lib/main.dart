@@ -1,5 +1,6 @@
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_bloc.dart';
 import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
+import 'package:expensetracker/screens/home/home_screen.dart';
 import 'package:expensetracker/screens/onboarding/onboarding_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,12 @@ class MyApp extends StatelessWidget {
           settings: settings,
           
         );
+        case '/home':
+        return GetPageRoute(
+          page: () => const HomeScreen(),
+          settings: settings,
+          
+        );
       default:
         return GetPageRoute(
           page: () => const OnboardingScreens(),
@@ -52,7 +59,7 @@ class MyApp extends StatelessWidget {
       //   useMaterial3: true,
       // ),
       onGenerateRoute: GeneratedRoutes,
-      initialRoute: '/',
+      initialRoute: '/home',
       home: BlocProvider(
         create: (context) => OnboardingBloc(),
         child: OnboardingScreens(),
