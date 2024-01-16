@@ -73,6 +73,19 @@ flutter:
     - assets/images/balance.svg
     - assets/images/payment.png
     - assets/icons/payment.svg
+    - assets/icons/transaction.png
+    - assets/icons/home.png
+    - assets/icons/stats.png
+    - assets/icons/account.png
+    - assets/icons/entertainment.png
+    - assets/icons/food.png
+    - assets/icons/transport.png
+    - assets/icons/health.png
+    - assets/icons/education.png
+    - assets/icons/shopping-bag.png
+    - assets/icons/travel.png
+    - assets/icons/bill.png
+    - assets/icons/others.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

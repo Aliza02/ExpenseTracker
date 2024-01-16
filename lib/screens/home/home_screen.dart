@@ -19,17 +19,89 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     List<ChartData> data = [
-      ChartData(xData: 'Remaining', yData: 50),
-      ChartData(xData: 'Used', yData: 50),
+      ChartData(xData: 'Remaining', yData: 100),
+      ChartData(xData: 'Used', yData: 30),
     ];
     return SafeArea(
         child: Scaffold(
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        color: AppColors.cream,
+        elevation: 6.0,
+        notchMargin: 6.0,
+        height: 50.0,
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: Get.width * 0.18,
+              child: InkWell(
+                onTap: () {},
+                child: Image.asset(
+                  AppIcons.home,
+                  height: Get.width * 0.06,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: Get.width * 0.2,
+              child: InkWell(
+                onTap: () {},
+                child: Image.asset(
+                  AppIcons.transaction,
+                  height: Get.width * 0.06,
+                ),
+              ),
+            ),
+            Container(
+              width: Get.width * 0.2,
+              margin: EdgeInsets.only(
+                left: Get.width * 0.15,
+              ),
+              child: InkWell(
+                onTap: () {},
+                child: Image.asset(
+                  AppIcons.stats,
+                  height: Get.width * 0.06,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: Get.width * 0.18,
+              child: InkWell(
+                onTap: () {},
+                child: Image.asset(
+                  AppIcons.account,
+                  height: Get.width * 0.06,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Get.width),
+        ),
+        onPressed: () {
+          Get.toNamed('/addTransaction');
+        },
+        backgroundColor: AppColors.blue,
+        child: Icon(
+          Icons.add,
+          color: AppColors.cream,
+          size: Get.width * 0.08,
+        ),
+      ),
       backgroundColor: AppColors.cream,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: Get.width,
-            height: Get.height * 0.5,
+            height: Get.height * 0.45,
             decoration: BoxDecoration(
               color: AppColors.blue,
               boxShadow: [
@@ -225,12 +297,53 @@ class HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Text(
-            'Recent Transaction',
-            style: TextStyle(
-              fontSize: Get.width * 0.065,
-              fontWeight: FontWeight.bold,
-              color: AppColors.blue.withOpacity(0.7),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Get.width * 0.04,
+              vertical: Get.height * 0.01,
+            ),
+            child: Text(
+              'Recent Transaction',
+              style: TextStyle(
+                fontSize: Get.width * 0.075,
+                fontWeight: FontWeight.bold,
+                color: AppColors.blue,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Get.width * 0.04,
+                    vertical: Get.height * 0.01,
+                  ),
+                  child: Container(
+                    height: Get.height * 0.1,
+                    decoration: BoxDecoration(
+                      color: AppColors.cream,
+                      borderRadius: BorderRadius.circular(Get.width * 0.02),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0.6, 1),
+                          color: Colors.grey.withOpacity(0.5),
+                          // blurStyle: BlurStyle.solid,
+                          blurRadius: 1.8,
+                          spreadRadius: 2.0,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.food_bank_outlined),
+                        Text('ads'),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
