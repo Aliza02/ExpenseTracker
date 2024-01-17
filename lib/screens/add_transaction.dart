@@ -1,4 +1,5 @@
 import 'package:expensetracker/res/colors.dart';
+import 'package:expensetracker/widgets/category_card.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/textformfield.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,8 @@ class _AddTransactionState extends State<AddTransaction> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController amountController = TextEditingController();
+    final TextEditingController dateController = TextEditingController();
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
@@ -118,6 +121,8 @@ class _AddTransactionState extends State<AddTransaction> {
                                                 ),
                                               ),
                                               child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Container(
                                                     height: Get.height * 0.02,
@@ -132,63 +137,120 @@ class _AddTransactionState extends State<AddTransaction> {
                                                     ),
                                                   ),
                                                   Row(
-                                                    children: [
-                                                      text(
-                                                        title: 'Category',
-                                                        fontSize:
-                                                            Get.width * 0.06,
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: AppColors.cream,
-                                                      ),
-                                                      text(
-                                                        title: category[index]
-                                                            .toString(),
-                                                        fontSize:
-                                                            Get.width * 0.06,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: AppColors.cream,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       SizedBox(
-                                                        width: Get.width * 0.8,
-                                                        child: textformfield(
-                                                          hintText: 'Amount',
+                                                        height:
+                                                            Get.height * 0.1,
+                                                      ),
+                                                      Container(
+                                                        width: Get.width * 0.3,
+                                                        margin: EdgeInsets.only(
+                                                          left:
+                                                              Get.width * 0.15,
+                                                        ),
+                                                        child: text(
+                                                          title: 'Category',
+                                                          fontSize:
+                                                              Get.width * 0.06,
+                                                          fontWeight:
+                                                              FontWeight.w300,
                                                           color:
                                                               AppColors.cream,
-                                                          opacity: 0.0,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: Get.width * 0.5,
+                                                        margin: EdgeInsets.only(
+                                                          // right:
+                                                          //     Get.width * 0.04,
+                                                          top:
+                                                              Get.height * 0.03,
+                                                        ),
+                                                        child: CategoryCard(
+                                                          categoryIconPath:
+                                                              categoryIcon[
+                                                                      index]
+                                                                  .toString(),
+                                                          categoryName:
+                                                              category[index]
+                                                                  .toString(),
+                                                          cardColor:
+                                                              AppColors.blue,
+                                                          elementColor:
+                                                              AppColors.cream,
                                                         ),
                                                       ),
                                                     ],
-                                                  )
+                                                  ),
+                                                  SizedBox(
+                                                    width: Get.width * 0.8,
+                                                    child: textformfield(
+                                                      hintText: 'Amount',
+                                                      color: AppColors.cream,
+                                                      opacity: 0.0,
+                                                      isDate: false,
+                                                      inputType:
+                                                          TextInputType.number,
+                                                      controller:
+                                                          amountController,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: Get.width * 0.8,
+                                                    child: textformfield(
+                                                      hintText: 'Date',
+                                                      color: AppColors.cream,
+                                                      isDate: true,
+                                                      opacity: 0.0,
+                                                      inputType:
+                                                          TextInputType.none,
+                                                      controller:
+                                                          dateController,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: Get.width * 0.4,
+                                                    child: ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .blue
+                                                                  .withOpacity(
+                                                                      0.3),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                        ),
+                                                        onPressed: () {},
+                                                        child: text(
+                                                            title: 'Add',
+                                                            fontSize:
+                                                                Get.width *
+                                                                    0.04,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: AppColors
+                                                                .cream)),
+                                                  ),
                                                 ],
                                               ),
                                             );
                                           });
                                     },
-                                    child: Card(
-                                      elevation: 0.0,
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            categoryIcon[index].toString(),
-                                            height: Get.width * 0.09,
-                                          ),
-                                          SizedBox(
-                                            height: Get.height * 0.01,
-                                          ),
-                                          text(
-                                            title: category[index].toString(),
-                                            fontSize: Get.width * 0.041,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.black,
-                                          ),
-                                        ],
-                                      ),
+                                    child: CategoryCard(
+                                      categoryIconPath:
+                                          categoryIcon[index].toString(),
+                                      categoryName: category[index].toString(),
+                                      cardColor: Colors.transparent,
+                                      elementColor: AppColors.black,
                                     ),
                                   ),
                                 );
