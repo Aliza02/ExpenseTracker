@@ -1,8 +1,12 @@
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_bloc.dart';
+import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_bloc.dart';
+import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
 import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
 import 'package:expensetracker/screens/add_transaction.dart';
 import 'package:expensetracker/screens/home/home_screen.dart';
 import 'package:expensetracker/screens/onboarding/onboarding_screens.dart';
+import 'package:expensetracker/screens/stats/stats.dart';
+import 'package:expensetracker/screens/transactions/all_transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -33,14 +37,30 @@ class MyApp extends StatelessWidget {
         );
       case '/home':
         return GetPageRoute(
-          page: () => const HomeScreen(),
+          page: () => BlocProvider(
+            create: (context) => TransactionTileBloc(),
+            child: const HomeScreen(),
+          ),
           settings: settings,
         );
       case '/addTransaction':
         return GetPageRoute(
           page: () => const AddTransaction(),
           settings: settings,
-          
+        );
+
+      case '/allTransactions':
+        return GetPageRoute(
+          page: () => AllTransactions(),
+          settings: settings,
+        );
+      case '/stats':
+        return GetPageRoute(
+          page: () => BlocProvider(
+            create: (context) => statsBloc(),
+            child: Stats(),
+          ),
+          settings: settings,
         );
       default:
         return GetPageRoute(

@@ -1,9 +1,13 @@
+import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
+import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_events.dart';
 import 'package:expensetracker/model/chart_data.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/res/icons.dart';
 import 'package:expensetracker/res/images.dart';
+import 'package:expensetracker/widgets/transaction_tile.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -25,13 +29,12 @@ class HomeScreenState extends State<HomeScreen> {
     return SafeArea(
         child: Scaffold(
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         color: AppColors.cream,
         elevation: 6.0,
         notchMargin: 6.0,
         height: 50.0,
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
@@ -47,7 +50,11 @@ class HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: Get.width * 0.2,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  // BlocProvider.of<TransactionTileBloc>(context)
+                  //     .add(TransactionTileAllTransactionEvent());
+                  Get.toNamed('/allTransactions');
+                },
                 child: Image.asset(
                   AppIcons.transaction,
                   height: Get.width * 0.06,
@@ -60,7 +67,9 @@ class HomeScreenState extends State<HomeScreen> {
                 left: Get.width * 0.15,
               ),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed('/stats');
+                },
                 child: Image.asset(
                   AppIcons.stats,
                   height: Get.width * 0.06,
@@ -206,11 +215,9 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     Container(
                       width: Get.width * 0.9,
-                      // height: Get.height * 0.2,
                       margin: EdgeInsets.only(
                         top: Get.height * 0.02,
                       ),
-
                       decoration: BoxDecoration(
                         color: AppColors.cream,
                         borderRadius: BorderRadius.circular(
@@ -230,7 +237,6 @@ class HomeScreenState extends State<HomeScreen> {
                           Container(
                             margin: EdgeInsets.only(
                               left: Get.width * 0.02,
-                              // top: Get.height * 0.05,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,6 +248,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         Image.asset(
                                           'assets/images/payment.png',
                                           height: Get.width * 0.1,
+                                          color: AppColors.grey,
                                         ),
                                         SizedBox(
                                           width: Get.width * 0.02,
@@ -249,7 +256,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         Text(
                                           'Balance',
                                           style: TextStyle(
-                                            color: AppColors.blue,
+                                            color: AppColors.grey,
                                             fontSize: Get.width * 0.07,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -263,7 +270,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       child: Text(
                                         'Rs.90000',
                                         style: TextStyle(
-                                          color: AppColors.grey,
+                                          color: AppColors.blue,
                                           fontSize: Get.width * 0.1,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -274,15 +281,41 @@ class HomeScreenState extends State<HomeScreen> {
                                 SizedBox(
                                   height: Get.height * 0.25,
                                   width: Get.width * 0.4,
-                                  child: SfCircularChart(
-                                    series: <PieSeries>[
-                                      PieSeries<ChartData, dynamic>(
-                                        dataSource: data,
-                                        xValueMapper: (ChartData data, _) =>
-                                            data.xData,
-                                        yValueMapper: (ChartData data, _) =>
-                                            data.yData,
-                                      )
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        top: Get.height * 0.045,
+                                        left: Get.width * 0.042,
+                                        child: Container(
+                                          height: Get.height * 0.16,
+                                          width: Get.width * 0.32,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(
+                                                Get.width),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                blurRadius: 1.4,
+                                                spreadRadius: 2.0,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SfCircularChart(
+                                        series: <PieSeries>[
+                                          PieSeries<ChartData, dynamic>(
+                                            radius: '93%',
+                                            dataSource: data,
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.xData,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.yData,
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -313,36 +346,9 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 1,
+              itemCount: 6,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Get.width * 0.04,
-                    vertical: Get.height * 0.01,
-                  ),
-                  child: Container(
-                    height: Get.height * 0.1,
-                    decoration: BoxDecoration(
-                      color: AppColors.cream,
-                      borderRadius: BorderRadius.circular(Get.width * 0.02),
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(0.6, 1),
-                          color: Colors.grey.withOpacity(0.5),
-                          // blurStyle: BlurStyle.solid,
-                          blurRadius: 1.8,
-                          spreadRadius: 2.0,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.food_bank_outlined),
-                        Text('ads'),
-                      ],
-                    ),
-                  ),
-                );
+                return TransactionTile();
               },
             ),
           ),

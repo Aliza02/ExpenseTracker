@@ -1,5 +1,7 @@
 import 'package:expensetracker/res/colors.dart';
+import 'package:expensetracker/widgets/appBar.dart';
 import 'package:expensetracker/widgets/category_card.dart';
+import 'package:expensetracker/widgets/heading.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/textformfield.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,6 @@ class _AddTransactionState extends State<AddTransaction> {
     'Food',
     'Others',
   ];
-
   List<String> categoryIcon = [
     AppIcons.entertainment,
     AppIcons.bills,
@@ -43,36 +44,17 @@ class _AddTransactionState extends State<AddTransaction> {
   Widget build(BuildContext context) {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController dateController = TextEditingController();
+    final TextEditingController notesController = TextEditingController();
     return SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              leading: InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: AppColors.black.withOpacity(0.6),
-                  size: 30.0,
-                ),
-              ),
-            ),
+            backgroundColor: AppColors.cream,
+            appBar: const appBar(),
             body: SizedBox(
               width: Get.width,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Get.width * 0.03,
-                    ),
-                    child: text(
-                      title: 'Add Expense',
-                      fontSize: Get.width * 0.08,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.black.withOpacity(0.6),
-                    ),
-                  ),
+                  const heading(title: 'Add Expense'),
                   Expanded(
                     child: ListView.builder(
                         shrinkWrap: true,
@@ -92,7 +74,6 @@ class _AddTransactionState extends State<AddTransaction> {
                                 } else {
                                   index = index;
                                 }
-
                                 return Container(
                                   width: Get.width * 0.3,
                                   margin: EdgeInsets.only(
@@ -164,8 +145,6 @@ class _AddTransactionState extends State<AddTransaction> {
                                                       Container(
                                                         width: Get.width * 0.5,
                                                         margin: EdgeInsets.only(
-                                                          // right:
-                                                          //     Get.width * 0.04,
                                                           top:
                                                               Get.height * 0.03,
                                                         ),
@@ -209,6 +188,19 @@ class _AddTransactionState extends State<AddTransaction> {
                                                           TextInputType.none,
                                                       controller:
                                                           dateController,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: Get.width * 0.8,
+                                                    child: textformfield(
+                                                      hintText: 'Notes',
+                                                      color: AppColors.cream,
+                                                      opacity: 0.0,
+                                                      isDate: false,
+                                                      inputType:
+                                                          TextInputType.text,
+                                                      controller:
+                                                          notesController,
                                                     ),
                                                   ),
                                                   SizedBox(
