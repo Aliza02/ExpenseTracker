@@ -41,6 +41,11 @@ dependencies:
   fl_chart: ^0.66.0
   syncfusion_flutter_charts: ^24.1.45+2
   table_calendar: ^3.0.9
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
+  email_validator: ^2.1.17
+  cloud_firestore: ^4.14.0
+  
 
 dev_dependencies:
   flutter_test:

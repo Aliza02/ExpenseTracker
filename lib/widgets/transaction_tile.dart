@@ -9,19 +9,29 @@ import 'package:get/get.dart';
 import '../res/colors.dart';
 
 class TransactionTile extends StatelessWidget {
-  const TransactionTile({super.key});
+  final String category;
+  final String notes;
+  final int amount;
+  const TransactionTile(
+      {super.key,
+      required this.category,
+      required this.notes,
+      required this.amount});
 
   @override
   Widget build(BuildContext context) {
-    List<String> abc = [
-      'Entertainment',
-      'Education',
-      'Food',
-      'Health',
-      'Shopping',
-      'Travel',
-      'Other'
-    ];
+    Map<String, String> icons = {
+      'Education': "assets/icons/education.png",
+      'Bill': "assets/icons/bill.png",
+      'Entertainment': 'assets/icons/entertainment.png',
+      'Travel': 'assets/icons/travel.png',
+      'Health': 'assets/icons/health.png',
+      'Shopping': 'assets/icons/shopping-bag.png',
+      'Transport': 'assets/icons/transport.png',
+      'Food': 'assets/icons/food.png',
+      'Others': 'assets/icons/others.png',
+    };
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: Get.width * 0.04,
@@ -47,7 +57,7 @@ class TransactionTile extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: Get.width * 0.035,
               ),
-              child: Image.asset(AppIcons.education,
+              child: Image.asset(icons["$category"].toString(),
                   height: 50.0, color: AppColors.blue),
             ),
             SizedBox(
@@ -56,41 +66,36 @@ class TransactionTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
                   text(
-                      title: 'Education',
-                      fontSize: Get.width * 0.05,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.blue,
-                      ),
-                      
+                    title: category,
+                    fontSize: Get.width * 0.05,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blue,
+                  ),
                   text(
-                    title: 'Stationary and Books',
+                    title: notes,
                     fontSize: Get.width * 0.04,
                     fontWeight: FontWeight.normal,
                     color: AppColors.blue,
                   ),
-
                 ],
               ),
             ),
-            // Spacer(
-            //   flex: 1,
-            // ),
+           
             SizedBox(
               width: Get.width * 0.08,
             ),
             const Icon(
               Icons.arrow_upward,
-              color: AppColors.blue,
+              color: Color(0xFFFc06c84),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Get.width * 0.0),
               child: text(
-                title: '4000',
+                title: amount.toString(),
                 fontSize: Get.width * 0.045,
                 fontWeight: FontWeight.w500,
-                color: AppColors.blue,
+                color: Color(0xFFFc06c84),
               ),
             ),
           ],

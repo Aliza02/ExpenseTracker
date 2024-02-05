@@ -9,14 +9,16 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.cream,
+      // backgroundColor: AppColors.cream,
+      // elevation: 0.0,
+      forceMaterialTransparency: true,
       leading: InkWell(
         onTap: () {
           Get.back();
         },
         child: Icon(
           Icons.arrow_back_ios,
-          color: AppColors.black.withOpacity(0.6),
+          color: AppColors.blue,
           size: 30.0,
         ),
       ),

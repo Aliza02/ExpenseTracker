@@ -1,17 +1,26 @@
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
+import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
+import 'package:expensetracker/firebase_options.dart';
 import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
+import 'package:expensetracker/screens/SignIn_SignUp/signup.dart';
 import 'package:expensetracker/screens/add_transaction.dart';
 import 'package:expensetracker/screens/home/home_screen.dart';
 import 'package:expensetracker/screens/onboarding/onboarding_screens.dart';
+import 'package:expensetracker/screens/profile/profile.dart';
 import 'package:expensetracker/screens/stats/stats.dart';
 import 'package:expensetracker/screens/transactions/all_transactions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -32,15 +41,12 @@ class MyApp extends StatelessWidget {
         );
       case '/signup':
         return GetPageRoute(
-          page: () => const Signin(),
+          page: () => const Signup(),
           settings: settings,
         );
       case '/home':
         return GetPageRoute(
-          page: () => BlocProvider(
-            create: (context) => TransactionTileBloc(),
-            child: const HomeScreen(),
-          ),
+          page: () => const HomeScreen(),
           settings: settings,
         );
       case '/addTransaction':
@@ -62,6 +68,14 @@ class MyApp extends StatelessWidget {
           ),
           settings: settings,
         );
+      case '/profile':
+        return GetPageRoute(
+          page: () => BlocProvider(
+            create: (context) => statsBloc(),
+            child: profile(),
+          ),
+          settings: settings,
+        );
       default:
         return GetPageRoute(
           page: () => const OnboardingScreens(),
@@ -77,11 +91,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       onGenerateRoute: GeneratedRoutes,
-      initialRoute: '/home',
-      home: BlocProvider(
-        create: (context) => OnboardingBloc(),
-        child: OnboardingScreens(),
-      ),
+      initialRoute: auth.currentUser!=null?
+      '/home':'/signin',
+      // home: BlocProvider(
+      //   create: (context) => OnboardingBloc(),
+      //   child: const OnboardingScreens(),
+      // ),
     );
   }
 }

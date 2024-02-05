@@ -1,22 +1,50 @@
+import 'package:expensetracker/bloc/onboardingBloc/signupbloc/signup_bloc.dart';
+import 'package:expensetracker/bloc/onboardingBloc/signupbloc/signup_events.dart';
+import 'package:expensetracker/bloc/onboardingBloc/signupbloc/signup_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
-class textfield extends StatelessWidget {
+class textfield extends StatefulWidget {
   final String hintText;
-  const textfield({super.key, required this.hintText});
+  final TextEditingController controller;
+  const textfield({
+    super.key,
+    required this.hintText,
+    required this.controller,
+  });
 
+  @override
+  State<textfield> createState() => _textfieldState();
+}
+
+class _textfieldState extends State<textfield> {
+  bool obscureText = true;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: Get.width * 0.9,
       height: Get.height * 0.065,
       child: TextFormField(
-        obscureText: hintText == 'Password' ? true : false,
+        controller: widget.controller,
+        obscureText: widget.hintText == 'Password' ||
+                widget.hintText == 'Confirm Password'
+            ? obscureText
+            : !obscureText,
         decoration: InputDecoration(
-          suffixIcon: hintText == 'Password'
-              ? const Icon(Icons.visibility_off_outlined)
+          suffixIcon: widget.hintText == 'Password'
+              ? InkWell(
+                  onTap: () {
+                    setState(() {
+                      obscureText = !obscureText;
+                    });
+                  },
+                  child: Icon(obscureText == false
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
+                )
               : null,
-          hintText: hintText,
+          hintText: widget.hintText,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Get.width * 0.02),
             borderSide: const BorderSide(

@@ -1,14 +1,11 @@
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_events.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
 import 'package:expensetracker/model/chart_data.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/res/icons.dart';
-import 'package:expensetracker/res/images.dart';
+import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/transaction_tile.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -20,12 +17,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  List<ChartData> data = [
+    // ChartData(xData: 'Remaining', yData: 30),
+    // ChartData(xData: 'Used', yData: 70),
+  ];
+  int spentAmount = 0;
+  double spentRatio = 0.0;
+  Future<double> buildChart() async {
+    DocumentSnapshot snapshot =
+        await firestore.collection('users').doc(auth.currentUser!.uid).get();
+
+    await firestore
+        .collection('Transactions')
+        .doc(auth.currentUser!.uid)
+        .collection('CategoriesTransactions')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        spentAmount = element['amount'] + spentAmount;
+        spentRatio = (spentAmount / snapshot['balance']) * 100;
+      });
+    });
+
+    return spentRatio;
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<ChartData> data = [
-      ChartData(xData: 'Remaining', yData: 100),
-      ChartData(xData: 'Used', yData: 30),
-    ];
     return SafeArea(
         child: Scaffold(
       bottomNavigationBar: BottomAppBar(
@@ -40,7 +58,9 @@ class HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: Get.width * 0.18,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed('/home');
+                },
                 child: Image.asset(
                   AppIcons.home,
                   height: Get.width * 0.06,
@@ -51,8 +71,6 @@ class HomeScreenState extends State<HomeScreen> {
               width: Get.width * 0.2,
               child: InkWell(
                 onTap: () {
-                  // BlocProvider.of<TransactionTileBloc>(context)
-                  //     .add(TransactionTileAllTransactionEvent());
                   Get.toNamed('/allTransactions');
                 },
                 child: Image.asset(
@@ -79,7 +97,9 @@ class HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: Get.width * 0.18,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed('/profile');
+                },
                 child: Image.asset(
                   AppIcons.account,
                   height: Get.width * 0.06,
@@ -197,19 +217,28 @@ class HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              left: Get.width * 0.065,
-                            ),
-                            child: Text(
-                              'Aliza Aziz',
-                              style: TextStyle(
-                                fontSize: Get.width * 0.065,
-                                fontWeight: FontWeight.normal,
-                                color: AppColors.cream,
-                              ),
-                            ),
-                          ),
+                          StreamBuilder(
+                              stream: firestore
+                                  .collection('users')
+                                  .doc(auth.currentUser!.uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                return Container(
+                                  margin: EdgeInsets.only(
+                                    left: Get.width * 0.065,
+                                  ),
+                                  child: Text(
+                                    !snapshot.hasData
+                                        ? ' '
+                                        : '${snapshot.data!['name']}',
+                                    style: TextStyle(
+                                      fontSize: Get.width * 0.065,
+                                      fontWeight: FontWeight.normal,
+                                      color: AppColors.cream,
+                                    ),
+                                  ),
+                                );
+                              }),
                         ],
                       ),
                     ),
@@ -243,39 +272,53 @@ class HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/payment.png',
-                                          height: Get.width * 0.1,
-                                          color: AppColors.grey,
-                                        ),
-                                        SizedBox(
-                                          width: Get.width * 0.02,
-                                        ),
-                                        Text(
-                                          'Balance',
-                                          style: TextStyle(
-                                            color: AppColors.grey,
-                                            fontSize: Get.width * 0.07,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                     Container(
                                       margin: EdgeInsets.only(
                                         left: Get.width * 0.03,
                                       ),
-                                      child: Text(
-                                        'Rs.90000',
-                                        style: TextStyle(
-                                          color: AppColors.blue,
-                                          fontSize: Get.width * 0.1,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/payment.png',
+                                            height: Get.width * 0.1,
+                                            color: AppColors.grey,
+                                          ),
+                                          SizedBox(
+                                            width: Get.width * 0.02,
+                                          ),
+                                          Text(
+                                            'Balance',
+                                            style: TextStyle(
+                                              color: AppColors.grey,
+                                              fontSize: Get.width * 0.07,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
+                                    StreamBuilder(
+                                        stream: firestore
+                                            .collection('users')
+                                            .doc(auth.currentUser!.uid)
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          return Container(
+                                            margin: EdgeInsets.only(
+                                              left: Get.width * 0.03,
+                                            ),
+                                            child: Text(
+                                              !snapshot.hasData
+                                                  ? 'Rs.0'
+                                                  : 'Rs.${snapshot.data!['balance']}',
+                                              style: TextStyle(
+                                                color: AppColors.blue,
+                                                fontSize: Get.width * 0.1,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          );
+                                        }),
                                   ],
                                 ),
                                 SizedBox(
@@ -304,18 +347,33 @@ class HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                       ),
-                                      SfCircularChart(
-                                        series: <PieSeries>[
-                                          PieSeries<ChartData, dynamic>(
-                                            radius: '93%',
-                                            dataSource: data,
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.xData,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.yData,
-                                          )
-                                        ],
-                                      ),
+                                      FutureBuilder(
+                                          future: buildChart(),
+                                          builder: (context, snapshot) {
+                                            print("jk ${snapshot.data}");
+                                            return SfCircularChart(
+                                              series: <PieSeries>[
+                                                PieSeries<ChartData, dynamic>(
+                                                  radius: '93%',
+                                                  dataSource: [
+                                                    ChartData(
+                                                        xData: 'Used',
+                                                        yData: spentRatio),
+                                                    ChartData(
+                                                        xData: 'Remaining',
+                                                        yData:
+                                                            100 - spentRatio),
+                                                  ],
+                                                  xValueMapper:
+                                                      (ChartData data, _) =>
+                                                          data.xData,
+                                                  yValueMapper:
+                                                      (ChartData data, _) =>
+                                                          data.yData,
+                                                )
+                                              ],
+                                            );
+                                          }),
                                     ],
                                   ),
                                 ),
@@ -344,14 +402,36 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return TransactionTile();
-              },
-            ),
-          ),
+          StreamBuilder(
+              stream: firestore
+                  .collection('Transactions')
+                  .doc(auth.currentUser!.uid)
+                  .collection('CategoriesTransactions')
+                  .orderBy('addTransactionDate', descending: true)
+                  .limit(5)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot snap = snapshot.data!.docs[index];
+
+                        return TransactionTile(
+                          amount: snap['amount'],
+                          category: snap['category'],
+                          notes: snap['note'],
+                        );
+                      },
+                    ),
+                  );
+                }
+              }),
         ],
       ),
     ));

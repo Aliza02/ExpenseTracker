@@ -1,5 +1,5 @@
-abstract class TransactionTileColorState {}
+// abstract class TransactionTileColorState {}
 
-class TransactionTileInBlueColor extends TransactionTileColorState {}
+// class TransactionTileInBlueColor extends TransactionTileColorState {}
 
-class TransactionTileInBlackColor extends TransactionTileColorState {}
+// class TransactionTileInBlackColor extends TransactionTileColorState {}

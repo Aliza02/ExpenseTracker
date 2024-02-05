@@ -1,10 +1,10 @@
-// enum TransactionTileColorEvents {
-//   transactionTileHomeScreenEvent,
-//   transactionTileInAllTransactionEvent
-// }
+// // enum TransactionTileColorEvents {
+// //   transactionTileHomeScreenEvent,
+// //   transactionTileInAllTransactionEvent
+// // }
 
-abstract class TransactionTileColorEvents {}
+// abstract class TransactionTileColorEvents {}
 
-class TransactionTileHomeScreenEvent extends TransactionTileColorEvents {}
+// class TransactionTileHomeScreenEvent extends TransactionTileColorEvents {}
 
-class TransactionTileAllTransactionEvent extends TransactionTileColorEvents {}
+// class TransactionTileAllTransactionEvent extends TransactionTileColorEvents {}

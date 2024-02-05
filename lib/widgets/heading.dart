@@ -18,7 +18,7 @@ class heading extends StatelessWidget {
         title: title,
         fontSize: Get.width * 0.08,
         fontWeight: FontWeight.w500,
-        color: AppColors.black.withOpacity(0.6),
+        color: AppColors.blue,
       ),
     );
   }
