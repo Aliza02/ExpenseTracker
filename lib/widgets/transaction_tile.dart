@@ -58,7 +58,7 @@ class TransactionTile extends StatelessWidget {
                 horizontal: Get.width * 0.035,
               ),
               child: Image.asset(icons["$category"].toString(),
-                  height: 50.0, color: AppColors.blue),
+                  height: 35.0, color: AppColors.blue),
             ),
             SizedBox(
               width: Get.width * 0.4,
@@ -81,7 +81,6 @@ class TransactionTile extends StatelessWidget {
                 ],
               ),
             ),
-           
             SizedBox(
               width: Get.width * 0.08,
             ),

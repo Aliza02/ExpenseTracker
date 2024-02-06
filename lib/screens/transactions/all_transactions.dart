@@ -61,16 +61,20 @@ class _AllTransactionsState extends State<AllTransactions> {
                         child: CircularProgressIndicator(),
                       );
                     } else {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.docs!.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot snap = snapshot.data!.docs[index];
-                          return TransactionTile(
-                            amount: snap['amount'],
-                            category: snap['category'],
-                            notes: snap['note'],
-                          );
-                        },
+                      return Expanded(
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot snap = snapshot.data!.docs[index];
+                            return TransactionTile(
+                              amount: snap['amount'],
+                              category: snap['category'],
+                              notes: snap['note'],
+                            );
+                          },
+                        ),
                       );
                     }
                   }),

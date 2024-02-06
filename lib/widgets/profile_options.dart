@@ -39,6 +39,7 @@ class ProfileOptions extends StatelessWidget {
                 ? null
                 : () async {
                     if (optionTitle == 'Amount') {
+                      print(amount);
                       showDialog(
                           context: context,
                           builder: (context) {
@@ -77,7 +78,7 @@ class ProfileOptions extends StatelessWidget {
                                             ),
                                           ),
                                           onPressed: () {
-                                            Get.back();
+                                           
                                             firestore
                                                 .collection('users')
                                                 .doc(auth.currentUser!.uid)
@@ -85,6 +86,7 @@ class ProfileOptions extends StatelessWidget {
                                               'balance': amount +
                                                   int.parse(controller.text)
                                             });
+                                            Get.back();
                                             Get.showSnackbar(const GetSnackBar(
                                               backgroundColor: AppColors.blue,
                                               message: 'Amount has been Added',
