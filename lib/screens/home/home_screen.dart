@@ -75,7 +75,7 @@ class HomeScreenState extends State<HomeScreen> {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization':
-                'key=AAAAzIotYuQ:APA91bFWThcyd3cRcB24_C2b5ByfdXmiLvPWUAAWw5ijzlINFXWMx9vBvx2msdzAW4AdTuJrb4StfJFyPAjFI3KTU3U1ZBcpUTOVCxNmn21xj6KlV3btw_DmqA48irC2qO7j5-jRd3a4'
+                'key='
           },
         );
         if (result.statusCode == 200) {
