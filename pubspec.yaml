@@ -45,6 +45,11 @@ dependencies:
   firebase_auth: ^4.16.0
   email_validator: ^2.1.17
   cloud_firestore: ^4.14.0
+  shared_preferences: ^2.2.2
+  test: ^1.24.9
+  firebase_messaging: ^14.7.15
+  http: ^1.2.0
+  flutter_local_notifications: ^16.3.2
   
 
 dev_dependencies:

@@ -111,13 +111,13 @@ class profile extends StatelessWidget {
               icon: Icons.edit,
             ),
             const divider(),
-            ProfileOptions(
-              optionTitle: 'History',
-              icon: Icons.history,
-              amount: balanceAmount,
-              name: auth.currentUser!.displayName.toString(),
-            ),
-            const divider(),
+            // ProfileOptions(
+            //   optionTitle: 'History',
+            //   icon: Icons.history,
+            //   amount: balanceAmount,
+            //   name: auth.currentUser!.displayName.toString(),
+            // ),
+            // const divider(),
             InkWell(
               onTap: () {
                 auth.signOut();

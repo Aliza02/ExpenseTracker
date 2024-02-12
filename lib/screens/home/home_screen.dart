@@ -1,13 +1,23 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expensetracker/bloc/notification/notification_bloc.dart';
+import 'package:expensetracker/bloc/notification/notification_event.dart';
+import 'package:expensetracker/bloc/notification/notification_states.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
+import 'package:expensetracker/firebase_notifications/firebase_noti.dart';
 import 'package:expensetracker/model/chart_data.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/res/icons.dart';
+import 'package:expensetracker/screens/notifications/notifications.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/transaction_tile.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,12 +27,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  List<ChartData> data = [
-    // ChartData(xData: 'Remaining', yData: 30),
-    // ChartData(xData: 'Used', yData: 70),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    firebaseInit(context);
+  }
+
+  List<ChartData> data = [];
   int spentAmount = 0;
   double spentRatio = 0.0;
+  double balance = 0.0;
+
+  int notificationCount = 0;
   Future<double> buildChart() async {
     DocumentSnapshot snapshot =
         await firestore.collection('users').doc(auth.currentUser!.uid).get();
@@ -35,9 +51,40 @@ class HomeScreenState extends State<HomeScreen> {
         .then((value) {
       value.docs.forEach((element) {
         spentAmount = element['amount'] + spentAmount;
-        spentRatio = (spentAmount / snapshot['balance']) * 100;
       });
+      print(spentAmount);
+      print(snapshot['balance']);
+      spentRatio = (spentAmount / snapshot['balance']) * 100;
     });
+    print(spentRatio);
+
+    if (snapshot['balance'] <= 10000) {
+      await initNotification().then((value) async {
+        var data = {
+          'to': value.toString(),
+          'priority': 'high',
+          'notification': {
+            'title': 'Low Balance',
+            'body': 'Your balance is low. Please Reacharge your account.',
+          }
+        };
+
+        final result = await http.post(
+          Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          body: jsonEncode(data),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+                'key=AAAAzIotYuQ:APA91bFWThcyd3cRcB24_C2b5ByfdXmiLvPWUAAWw5ijzlINFXWMx9vBvx2msdzAW4AdTuJrb4StfJFyPAjFI3KTU3U1ZBcpUTOVCxNmn21xj6KlV3btw_DmqA48irC2qO7j5-jRd3a4'
+          },
+        );
+        if (result.statusCode == 200) {
+          notificationCount++;
+          BlocProvider.of<NotificationBloc>(context)
+              .add(HasNotification(notificationCount: notificationCount));
+        }
+      });
+    }
 
     return spentRatio;
   }
@@ -204,15 +251,81 @@ class HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: Get.height * 0.03,
-                                  right: Get.width * 0.065,
-                                ),
-                                child: Icon(
-                                  Icons.notifications,
-                                  color: AppColors.cream,
-                                  size: Get.width * 0.08,
+                              InkWell(
+                                onTap: () async {
+                                  if (notificationCount > 0) {
+                                    Get.to(
+                                        () => BlocProvider.value(
+                                            value: BlocProvider.of<
+                                                NotificationBloc>(
+                                              context,
+                                            ),
+                                            child: const notifications()),
+                                        arguments: [
+                                          'Low Balance',
+                                          'Your balance is low. Please Recharge your account.'
+                                        ]);
+                                  } else {
+                                    Get.to(
+                                      () => BlocProvider.value(
+                                          value:
+                                              BlocProvider.of<NotificationBloc>(
+                                            context,
+                                          ),
+                                          child: const notifications()),
+                                      arguments: ['', ''],
+                                    );
+                                  }
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        top: Get.height * 0.03,
+                                        right: Get.width * 0.065,
+                                      ),
+                                      child: Icon(
+                                        Icons.notifications,
+                                        color: AppColors.cream,
+                                        size: Get.width * 0.08,
+                                      ),
+                                    ),
+                                    BlocBuilder<NotificationBloc,
+                                            NotificationStates>(
+                                        builder: (context, state) {
+                                      print(state);
+                                      if (state is HasNotificationState) {
+                                        return Positioned(
+                                          top: Get.height * 0.01,
+                                          left: Get.width * 0.03,
+                                          child: Container(
+                                            width: Get.width * 0.07,
+                                            height: Get.height * 0.036,
+                                            alignment: Alignment.center,
+                                            decoration: ShapeDecoration(
+                                                color: Color(0xFFFc06c84),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          Get.width),
+                                                )),
+                                            child: text(
+                                              title: state.notificationCount
+                                                  .toString(),
+                                              fontSize: Get.width * 0.05,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (state is noNotification) {
+                                        print(state);
+                                        return Container();
+                                      } else {
+                                        return Container();
+                                      }
+                                    })
+                                  ],
                                 ),
                               ),
                             ],

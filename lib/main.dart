@@ -1,7 +1,8 @@
+import 'package:expensetracker/bloc/notification/notification_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/onboarding_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_bloc.dart';
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
+import 'package:expensetracker/firebase_notifications/firebase_noti.dart';
 import 'package:expensetracker/firebase_options.dart';
 import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
 import 'package:expensetracker/screens/SignIn_SignUp/signup.dart';
@@ -15,12 +16,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+int? isViewed;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  isViewed = prefs.getInt('onboard');
   runApp(const MyApp());
 }
 
@@ -29,9 +36,12 @@ class MyApp extends StatelessWidget {
 
   Route GeneratedRoutes(RouteSettings settings) {
     switch (settings.name) {
-      case '/':
+      case '/onboard':
         return GetPageRoute(
-          page: () => const OnboardingScreens(),
+          page: () => BlocProvider(
+            create: (context) => OnboardingBloc(),
+            child: const OnboardingScreens(),
+          ),
           settings: settings,
         );
       case '/signin':
@@ -46,7 +56,9 @@ class MyApp extends StatelessWidget {
         );
       case '/home':
         return GetPageRoute(
-          page: () => const HomeScreen(),
+          page: () => BlocProvider(
+              create: (context) => NotificationBloc(),
+              child: const HomeScreen()),
           settings: settings,
         );
       case '/addTransaction':
@@ -91,8 +103,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       onGenerateRoute: GeneratedRoutes,
-      initialRoute: auth.currentUser!=null?
-      '/home':'/signin',
+      initialRoute: isViewed != 0
+          ? '/onboard'
+          : auth.currentUser != null
+              ? '/home'
+              : '/signin',
       // home: BlocProvider(
       //   create: (context) => OnboardingBloc(),
       //   child: const OnboardingScreens(),

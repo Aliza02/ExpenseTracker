@@ -41,8 +41,22 @@ class Stats extends StatelessWidget {
       6: 0,
       7: 0,
     };
-
+    Map<int, int> monthlyAmount = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+      11: 0,
+      12: 0,
+    };
     Map<String, int> weeklyDonutChartData = {};
+    Map<String, int> monthlyDonutChartData = {};
 
     List<data> weeklyBarData = [
       data(1, 1),
@@ -60,13 +74,35 @@ class Stats extends StatelessWidget {
       ChartData(xData: 'Grocery', yData: 20),
       ChartData(xData: 'Transport', yData: 10),
     ];
+    List<data> monthlyBarData = [
+      data(1, 0),
+      data(2, 0),
+      data(3, 0),
+      data(4, 0),
+      data(5, 0),
+      data(6, 0),
+      data(7, 0),
+      data(8, 0),
+      data(9, 0),
+      data(10, 0),
+      data(11, 0),
+      data(12, 0),
+    ];
 
+    List<ChartData> Monthlydata = [
+      ChartData(xData: 'Entertainment', yData: 40),
+      ChartData(xData: 'Travel', yData: 20),
+      ChartData(xData: 'Education', yData: 20),
+      ChartData(xData: 'Grocery', yData: 10),
+      ChartData(xData: 'Transport', yData: 10),
+    ];
     Future<void> getWeeklyChartData() async {
       await firestore
           .collection('Transactions')
           .doc(auth.currentUser!.uid)
           .collection('CategoriesTransactions')
           .orderBy('addTransactionDate', descending: true)
+          .limit(7)
           .get()
           .then((value) {
         value.docs.forEach((element) {
@@ -103,6 +139,48 @@ class Stats extends StatelessWidget {
       print(Weeklydata.length);
     }
 
+    Future<void> getMonthlyChartData() async {
+      await firestore
+          .collection('Transactions')
+          .doc(auth.currentUser!.uid)
+          .collection('CategoriesTransactions')
+          .orderBy('addTransactionDate', descending: true)
+          .limit(30)
+          .get()
+          .then((value) {
+        monthlyBarData.clear();
+        Monthlydata.clear();
+        value.docs.forEach((element) {
+          int amount = element['amount'];
+
+          DateTime date = DateTime.fromMillisecondsSinceEpoch(
+              element['addTransactionDate'].millisecondsSinceEpoch);
+          monthlyAmount.addAll({date.month: amount});
+          monthlyAmount.update(date.month, (value) => value + amount);
+          print(monthlyAmount);
+
+          monthlyDonutChartData.addAll({element['category']: amount});
+          monthlyDonutChartData.update(
+              element['category'], (value) => value + amount);
+        });
+      });
+
+      monthlyAmount.forEach((key, value) {
+        if (value == 0) {
+          monthlyBarData.add(data(key, value + 1));
+        } else {
+          monthlyBarData.add(data(key, value));
+        }
+      });
+
+      monthlyDonutChartData.forEach((key, value) {
+        Monthlydata.add(ChartData(xData: key, yData: value.toDouble()));
+      });
+
+      print(monthlyBarData.length);
+      print(Monthlydata.length);
+    }
+
     List<String> months = [
       'Jan',
       'Feb',
@@ -125,28 +203,6 @@ class Stats extends StatelessWidget {
       'Fri',
       'Sat',
       'Sun',
-    ];
-    List<data> monthylBarData = [
-      data(1, 20000),
-      data(2, 50000),
-      data(3, 10000),
-      data(4, 35000),
-      data(5, 40000),
-      data(6, 35000),
-      data(7, 23000),
-      data(8, 34000),
-      data(9, 25000),
-      data(10, 79000),
-      data(11, 66000),
-      data(12, 56000),
-    ];
-
-    List<ChartData> Monthlydata = [
-      ChartData(xData: 'Entertainment', yData: 40),
-      ChartData(xData: 'Travel', yData: 20),
-      ChartData(xData: 'Education', yData: 20),
-      ChartData(xData: 'Grocery', yData: 10),
-      ChartData(xData: 'Transport', yData: 10),
     ];
 
     List<Color> colors = [
@@ -204,6 +260,7 @@ class Stats extends StatelessWidget {
                               BlocProvider.of<statsBloc>(context)
                                   .add(WeeklyStatsEvents());
                             } else {
+                              // getMonthlyChartData();
                               BlocProvider.of<statsBloc>(context)
                                   .add(MonthlyStatsEvents());
                             }
@@ -247,15 +304,13 @@ class Stats extends StatelessWidget {
                       ),
                       SfCircularChart(
                         // margin: EdgeInsets.only(bottom: 100.0),
-                        
+
                         legend: const Legend(
-                          
                           textStyle: TextStyle(
                             color: AppColors.blue,
                             fontSize: 16.0,
-                            
                           ),
-                        
+
                           isVisible: true,
                           isResponsive: true,
                           orientation: LegendItemOrientation.vertical,
@@ -267,7 +322,10 @@ class Stats extends StatelessWidget {
                         ),
                         series: [
                           PieSeries<ChartData, dynamic>(
-                            radius: '80%',
+                            radius: (state is StatButtonSelectedStates &&
+                                    state.index == 0)
+                                ? '80%'
+                                : '80%',
                             dataSource: (state is StatButtonSelectedStates &&
                                     state.index == 0)
                                 ? Weeklydata
@@ -285,53 +343,61 @@ class Stats extends StatelessWidget {
                 builder: (context, state) {
                   return SizedBox(
                     height: Get.height * 0.32,
-                    child: FutureBuilder(
-                        future: (state is StatButtonSelectedStates &&
-                                state.index == 0)
-                            ? getWeeklyChartData()
-                            : null,
-                        builder: (context, snapshot) {
-                          return SfCartesianChart(
-                            plotAreaBorderWidth: 0.0,
-                            isTransposed: true,
-                            primaryYAxis: const CategoryAxis(
-                              isVisible: false,
-                            ),
-                            primaryXAxis: const CategoryAxis(
-                              interval: 1,
-                              isVisible: false,
-                            ),
-                            series: <CartesianSeries>[
-                              (state is StatButtonSelectedStates &&
-                                      state.index == 0)
-                                  ? BarSeries<data, dynamic>(
-                                      color: colors[0],
-                                      // spacing: 0.2,
-                                      width: 0.2,
-                                      isTrackVisible: true,
+                    child: (state is StatButtonSelectedStates)
+                        ? FutureBuilder(
+                            future: (state is StatButtonSelectedStates &&
+                                    state.index == 0)
+                                ? getWeeklyChartData()
+                                : getMonthlyChartData(),
+                            builder: (context, snapshot) {
+                              return SfCartesianChart(
+                                plotAreaBorderWidth: 0.0,
+                                isTransposed: true,
+                                primaryYAxis: const CategoryAxis(
+                                  isVisible: false,
+                                ),
+                                primaryXAxis: const CategoryAxis(
+                                  interval: 1,
+                                  isVisible: false,
+                                ),
+                                series: <CartesianSeries>[
+                                  (state is StatButtonSelectedStates &&
+                                          state.index == 0)
+                                      ? BarSeries<data, dynamic>(
+                                          color: colors[0],
+                                          // spacing: 0.2,
+                                          width: 0.2,
+                                          isTrackVisible: true,
 
-                                      trackColor:
-                                          AppColors.grey.withOpacity(0.3),
-                                      dataSource: weeklyBarData,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      xValueMapper: (data data, _) => data.a,
-                                      yValueMapper: (data data, _) => data.b,
-                                    )
-                                  : BarSeries<data, dynamic>(
-                                      color: colors[0],
-                                      // spacing: 0.2,
-                                      width: 0.2,
-                                      isTrackVisible: true,
-                                      trackColor:
-                                          AppColors.grey.withOpacity(0.3),
-                                      dataSource: monthylBarData,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      xValueMapper: (data data, _) => data.a,
-                                      yValueMapper: (data data, _) => data.b,
-                                    )
-                            ],
-                          );
-                        }),
+                                          trackColor:
+                                              AppColors.grey.withOpacity(0.3),
+                                          dataSource: weeklyBarData,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          xValueMapper: (data data, _) =>
+                                              data.a,
+                                          yValueMapper: (data data, _) =>
+                                              data.b,
+                                        )
+                                      : BarSeries<data, dynamic>(
+                                          color: colors[0],
+                                          // spacing: 0.2,
+                                          width: 0.2,
+                                          isTrackVisible: true,
+                                          trackColor:
+                                              AppColors.grey.withOpacity(0.3),
+                                          dataSource: monthlyBarData,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          xValueMapper: (data data, _) =>
+                                              data.a,
+                                          yValueMapper: (data data, _) =>
+                                              data.b,
+                                        )
+                                ],
+                              );
+                            })
+                        : Container(),
                   );
                 },
               ),

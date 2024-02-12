@@ -10,6 +10,7 @@ import 'package:expensetracker/screens/SignIn_SignUp/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreens extends StatefulWidget {
   const OnboardingScreens({super.key});
@@ -46,6 +47,12 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
     pageController.dispose();
   }
 
+  _storedonBoaredInfo() async {
+    int isViewed = 0;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('onboard', isViewed);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -78,6 +85,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                           ),
                           child: InkWell(
                             onTap: () {
+                              _storedonBoaredInfo();
                               pageController
                                   .jumpToPage(onboardingData.length - 1);
                             },
@@ -143,6 +151,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                               backgroundColor: AppColors.onboardingButtonColor,
                             ),
                             onPressed: () {
+                              _storedonBoaredInfo();
                               Get.to(() => Signup());
                             },
                             child: Text(
