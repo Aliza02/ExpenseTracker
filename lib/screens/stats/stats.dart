@@ -1,19 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_bloc.dart';
 import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_events.dart';
 import 'package:expensetracker/bloc/onboardingBloc/statsBloc/stats_states.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
 import 'package:expensetracker/model/chart_data.dart';
 import 'package:expensetracker/res/colors.dart';
-import 'package:expensetracker/res/icons.dart';
 import 'package:expensetracker/widgets/appBar.dart';
-import 'package:expensetracker/widgets/category_card.dart';
 import 'package:expensetracker/widgets/heading.dart';
 import 'package:expensetracker/widgets/text.dart';
-import 'package:expensetracker/widgets/transaction_tile.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -283,25 +277,25 @@ class Stats extends StatelessWidget {
                 builder: (context, state) {
                   return Stack(
                     children: [
-                      Positioned(
-                        top: Get.height * 0.098,
-                        left: Get.width * 0.08,
-                        child: Container(
-                          height: Get.height * 0.215,
-                          width: Get.width * 0.43,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(Get.width),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 1.0,
-                                spreadRadius: 2.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Positioned(
+                      //   top: Get.height * 0.11,
+                      //   left: Get.width * 0.08,
+                      //   child: Container(
+                      //     height: Get.height * 0.205,
+                      //     width: Get.width * 0.41,
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.transparent,
+                      //       borderRadius: BorderRadius.circular(Get.width),
+                      //       boxShadow: [
+                      //         BoxShadow(
+                      //           color: Colors.black.withOpacity(0.3),
+                      //           blurRadius: 1.0,
+                      //           spreadRadius: 2.0,
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       SfCircularChart(
                         // margin: EdgeInsets.only(bottom: 100.0),
 

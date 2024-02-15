@@ -1,9 +1,5 @@
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_states.dart';
-import 'package:expensetracker/res/icons.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../res/colors.dart';

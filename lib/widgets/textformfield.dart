@@ -9,9 +9,9 @@ class textformfield extends StatefulWidget {
   final double opacity;
   final bool isDate;
   final TextInputType inputType;
-  TextEditingController controller;
+  final TextEditingController controller;
 
-  textformfield(
+  const textformfield(
       {super.key,
       required this.hintText,
       required this.color,

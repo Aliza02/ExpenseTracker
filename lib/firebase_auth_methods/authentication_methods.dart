@@ -16,7 +16,6 @@ Future UserSignup(
   try {
     userCredentials = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
-
     user = userCredentials?.user;
 
     if (user != null) {

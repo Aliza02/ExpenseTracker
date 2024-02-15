@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expensetracker/bloc/onboardingBloc/transactionTileBloc/transactionTile_bloc.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/widgets/appBar.dart';
@@ -9,7 +6,6 @@ import 'package:expensetracker/widgets/heading.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class AllTransactions extends StatefulWidget {
@@ -53,7 +49,7 @@ class _AllTransactionsState extends State<AllTransactions> {
                       .collection('Transactions')
                       .doc(auth.currentUser!.uid)
                       .collection('CategoriesTransactions')
-                      .orderBy('date', descending: true)
+                      .orderBy('addTransactionDate', descending: true)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {

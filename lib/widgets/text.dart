@@ -1,5 +1,3 @@
-import 'package:expensetracker/res/colors.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class text extends StatelessWidget {

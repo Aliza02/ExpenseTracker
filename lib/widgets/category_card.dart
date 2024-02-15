@@ -1,4 +1,3 @@
-import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

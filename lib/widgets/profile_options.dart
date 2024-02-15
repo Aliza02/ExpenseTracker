@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
 import 'package:expensetracker/res/colors.dart';
-import 'package:expensetracker/widgets/signin_signup_button.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class ProfileOptions extends StatelessWidget {
   final String optionTitle;
@@ -77,15 +74,18 @@ class ProfileOptions extends StatelessWidget {
                                                   BorderRadius.circular(10.0),
                                             ),
                                           ),
-                                          onPressed: () {
-                                           
-                                            firestore
+                                          onPressed: () async {
+                                            print(amount);
+                                            print(controller.text);
+
+                                            await firestore
                                                 .collection('users')
                                                 .doc(auth.currentUser!.uid)
                                                 .update({
                                               'balance': amount +
                                                   int.parse(controller.text)
                                             });
+                                            controller.clear();
                                             Get.back();
                                             Get.showSnackbar(const GetSnackBar(
                                               backgroundColor: AppColors.blue,
@@ -142,9 +142,9 @@ class ProfileOptions extends StatelessWidget {
                                                   BorderRadius.circular(10.0),
                                             ),
                                           ),
-                                          onPressed: () {
+                                          onPressed: () async {
                                             Get.back();
-                                            firestore
+                                            await firestore
                                                 .collection('users')
                                                 .doc(auth.currentUser!.uid)
                                                 .update({

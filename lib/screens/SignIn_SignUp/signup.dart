@@ -3,7 +3,6 @@ import 'package:expensetracker/bloc/onboardingBloc/signupbloc/signup_events.dart
 import 'package:expensetracker/bloc/onboardingBloc/signupbloc/signup_states.dart';
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
 import 'package:expensetracker/res/images.dart';
-import 'package:expensetracker/screens/SignIn_SignUp/signin.dart';
 import 'package:expensetracker/widgets/signin_signup_button.dart';
 import 'package:expensetracker/widgets/textfield.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +21,6 @@ class SignupState extends State<Signup> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
-
-  void user() {
-    print('print');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,20 +97,20 @@ class SignupState extends State<Signup> {
                       Get.showSnackbar(GetSnackBar(
                         title: 'Incorrect Input',
                         message: state.errorMessage,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
                       ));
                     } else if (state is SignUpLoadingState) {
-                       UserSignup(
+                      UserSignup(
                         email: email.text,
                         name: name.text,
                         password: password.text,
                         confirmPassword: confirmPassword.text,
                       );
-
-                      
                     }
                   }, builder: (context, state) {
-                    if (state is InitialState || state is InvalidSignUpState || userCreated==false) {
+                    if (state is InitialState ||
+                        state is InvalidSignUpState ||
+                        userCreated == false) {
                       return Button(
                         buttonTitle: 'Sign Up',
                         onPressed: () {
@@ -128,9 +123,7 @@ class SignupState extends State<Signup> {
                           ));
                         },
                       );
-                    } 
-                   
-                     else {
+                    } else {
                       return Container();
                     }
                   }),

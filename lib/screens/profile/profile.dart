@@ -1,4 +1,5 @@
 import 'package:expensetracker/firebase_auth_methods/authentication_methods.dart';
+import 'package:expensetracker/firebase_notifications/firebase_noti.dart';
 import 'package:expensetracker/res/colors.dart';
 import 'package:expensetracker/widgets/appBar.dart';
 import 'package:expensetracker/widgets/divider.dart';
@@ -8,10 +9,33 @@ import 'package:expensetracker/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class profile extends StatelessWidget {
+class profile extends StatefulWidget {
   profile({super.key});
+
+  @override
+  State<profile> createState() => _profileState();
+}
+
+class _profileState extends State<profile> {
+
+  
   int balanceAmount = 0;
 
+  Future<int> getBalance() async {
+    await firestore
+        .collection('user')
+        .doc(auth.currentUser!.uid)
+        .get()
+        .then((value) {
+      balanceAmount = value['balance'];
+    });
+    return balanceAmount;
+  }
+@override
+void initState(){
+  super.initState();
+  firebaseInit(context);
+}
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -82,6 +106,7 @@ class profile extends StatelessWidget {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             balanceAmount = snapshot.data!['balance'];
+                            print(balanceAmount);
                           }
                           return text(
                             title: !snapshot.hasData
@@ -97,11 +122,16 @@ class profile extends StatelessWidget {
               ],
             ),
             const divider(),
-            ProfileOptions(
-              optionTitle: 'Amount',
-              amount: balanceAmount,
-              name: auth.currentUser!.displayName.toString(),
-              icon: Icons.add,
+            FutureBuilder(
+              future: getBalance(),
+              builder: (context, snapshot) {
+                return ProfileOptions(
+                  optionTitle: 'Amount',
+                  amount: balanceAmount,
+                  name: auth.currentUser!.displayName.toString(),
+                  icon: Icons.add,
+                );
+              },
             ),
             const divider(),
             ProfileOptions(
@@ -111,17 +141,10 @@ class profile extends StatelessWidget {
               icon: Icons.edit,
             ),
             const divider(),
-            // ProfileOptions(
-            //   optionTitle: 'History',
-            //   icon: Icons.history,
-            //   amount: balanceAmount,
-            //   name: auth.currentUser!.displayName.toString(),
-            // ),
-            // const divider(),
             InkWell(
               onTap: () {
                 auth.signOut();
-                // Get.offUntil(page, (route) => false)
+
                 try {
                   Get.offAllNamed('/signin');
                 } on Exception catch (e) {

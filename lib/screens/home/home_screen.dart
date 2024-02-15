@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensetracker/bloc/notification/notification_bloc.dart';
 import 'package:expensetracker/bloc/notification/notification_event.dart';
@@ -12,7 +11,6 @@ import 'package:expensetracker/res/icons.dart';
 import 'package:expensetracker/screens/notifications/notifications.dart';
 import 'package:expensetracker/widgets/text.dart';
 import 'package:expensetracker/widgets/transaction_tile.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
